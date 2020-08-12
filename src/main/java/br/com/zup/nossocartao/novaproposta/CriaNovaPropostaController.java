@@ -48,8 +48,9 @@ public class CriaNovaPropostaController {
 
 		String resultadoAvaliacao = integracoes
 				.avalia(new NovoDocumentoRequest(novaProposta));
-		
-		novaProposta.atualizaStatus(StatusAvaliacaoProposta.nova(resultadoAvaliacao));
+
+		novaProposta.atualizaStatus(RespostaStatusAvaliacao
+				.valueOf(resultadoAvaliacao).getStatusAvaliacao());
 
 		URI enderecoConsulta = builder.path("/propostas/{id}")
 				.build(novaProposta.getId());
