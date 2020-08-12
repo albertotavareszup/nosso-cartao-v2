@@ -15,43 +15,45 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 public class CriaNovaPropostaControllerTest {
 
+	private BloqueiaDocumentoIgualValidator validadorDocumento = Mockito
+			.mock(BloqueiaDocumentoIgualValidator.class);
+	private AvaliaProposta avaliaProposta = Mockito.mock(AvaliaProposta.class);
+	private ExecutorTransacao executaTransacao = Mockito
+			.mock(ExecutorTransacao.class);
+	private CriaNovaPropostaController controller = new CriaNovaPropostaController(
+			validadorDocumento, avaliaProposta, executaTransacao);
+
 	@Test
 	@DisplayName("nao pode processar proposta com documento igual")
 	void teste1() {
-		EntityManager manager = Mockito.mock(EntityManager.class);
-		BloqueiaDocumentoIgualValidator validadorDocumento = Mockito.mock(BloqueiaDocumentoIgualValidator.class);
-		CriaNovaPropostaController controller = new CriaNovaPropostaController(manager, validadorDocumento);
 		NovaPropostaRequest request = new NovaPropostaRequest("email@eamil.com",
 				"Alberto", "endereco", new BigDecimal("1000"), "111111111");
 		UriComponentsBuilder builder = UriComponentsBuilder.newInstance();
-		
+
 		Assertions.assertThrows(ResponseStatusException.class, () -> {
-			controller.cria(request, builder);			
+			controller.cria(request, builder);
 		});
 	}
-	
+
 	@Test
 	@DisplayName("deve salvar se o documento está válido")
 	void teste2() {
-		EntityManager manager = Mockito.mock(EntityManager.class);
-		
-		BloqueiaDocumentoIgualValidator validadorDocumento = Mockito.mock(BloqueiaDocumentoIgualValidator.class);		
-		CriaNovaPropostaController controller = new CriaNovaPropostaController(manager, validadorDocumento);
 		NovaPropostaRequest request = new NovaPropostaRequest("email@eamil.com",
 				"Alberto", "endereco", new BigDecimal("1000"), "111111111");
-				
-		UriComponentsBuilder builder =  UriComponentsBuilder.newInstance();
+
+		UriComponentsBuilder builder = UriComponentsBuilder.newInstance();
 
 		/*
-		 * O Mockito verifica se o objeto que representa a request de nova proposta
-		 * que vai ser passado como argumento lá dentro do método cria é de  fato o 
-		 * mesmo objeto que está sendo esperando na definicao da expectativa 
+		 * O Mockito verifica se o objeto que representa a request de nova
+		 * proposta que vai ser passado como argumento lá dentro do método cria
+		 * é de fato o mesmo objeto que está sendo esperando na definicao da
+		 * expectativa
 		 */
 		Mockito.when(validadorDocumento.estaValido(request)).thenReturn(true);
 		ResponseEntity<?> response = controller.cria(request, builder);
-		
+
 		Proposta propostaQueDeviaSerGerada = request.toModel();
-		Mockito.verify(manager).persist(propostaQueDeviaSerGerada);
-		Assertions.assertEquals(HttpStatus.CREATED,response.getStatusCode());
+		Mockito.verify(executaTransacao).salvaEComita(propostaQueDeviaSerGerada);
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 }
