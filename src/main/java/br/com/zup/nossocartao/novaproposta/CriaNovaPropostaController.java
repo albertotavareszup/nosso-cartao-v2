@@ -50,6 +50,8 @@ public class CriaNovaPropostaController {
 		//1
 		StatusAvaliacaoProposta avaliacao = avaliaProposta.executa(novaProposta);
 		novaProposta.atualizaStatus(avaliacao);
+		
+		executorTransacao.atualizaEComita(novaProposta);
 
 		URI enderecoConsulta = builder.path("/propostas/{id}")
 				.build(novaProposta.getId());
