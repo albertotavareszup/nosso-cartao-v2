@@ -13,8 +13,13 @@ public class ExecutorTransacao {
 	private EntityManager manager;
 	
 	@Transactional
-	public <T> T salvaEComita(T object) {
-		manager.persist(object);
-		return object;
+	public <T> T salvaEComita(T objeto) {
+		manager.persist(objeto);
+		return objeto;
+	}
+
+	@Transactional
+	public <T> T atualizaEComita(T objeto) {
+		return manager.merge(objeto);
 	}
 }
