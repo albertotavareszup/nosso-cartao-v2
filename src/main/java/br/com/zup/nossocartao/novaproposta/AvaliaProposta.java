@@ -14,6 +14,7 @@ import br.com.zup.nossocartao.outrossistemas.NovoDocumentoRequest;
 public class AvaliaProposta {
 	
 	@Autowired
+	//1
 	private Integracoes integracoes;
 
 	public StatusAvaliacaoProposta executa(@NotNull @Validated Proposta proposta) {
