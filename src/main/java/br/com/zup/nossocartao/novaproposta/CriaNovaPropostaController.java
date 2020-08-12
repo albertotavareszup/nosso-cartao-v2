@@ -23,19 +23,20 @@ public class CriaNovaPropostaController {
 	private EntityManager manager;
 	private BloqueiaDocumentoIgualValidator bloqueiaDocumentoIgualValidator;
 	private Integracoes integracoes;
+	private ExecutorTransacao executorTransacao;
 
 	public CriaNovaPropostaController(EntityManager manager,
 			BloqueiaDocumentoIgualValidator bloqueiaDocumentoIgualValidator,
-			Integracoes integracoes) {
+			Integracoes integracoes,ExecutorTransacao executorTransacao) {
 		super();
 		this.manager = manager;
 		this.bloqueiaDocumentoIgualValidator = bloqueiaDocumentoIgualValidator;
 		this.integracoes = integracoes;
+		this.executorTransacao = executorTransacao;
 
 	}
 
 	@PostMapping(value = "/propostas")
-	@Transactional
 	public ResponseEntity<?> cria(
 			@RequestBody @Valid NovaPropostaRequest request,
 			UriComponentsBuilder builder) {
@@ -44,7 +45,7 @@ public class CriaNovaPropostaController {
 		}
 
 		Proposta novaProposta = request.toModel();
-		manager.persist(novaProposta);
+		executorTransacao.salvaEComita(novaProposta);
 
 		String resultadoAvaliacao = integracoes
 				.avalia(new NovoDocumentoRequest(novaProposta));
