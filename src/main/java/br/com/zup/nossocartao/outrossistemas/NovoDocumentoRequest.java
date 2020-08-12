@@ -1,17 +1,24 @@
 package br.com.zup.nossocartao.outrossistemas;
 
-import br.com.zup.nossocartao.novaproposta.CpfCnpj;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
+import br.com.zup.nossocartao.novaproposta.CpfCnpj;
+import br.com.zup.nossocartao.novaproposta.Proposta;
+
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class NovoDocumentoRequest {
 
 	@CpfCnpj
 	private String documento;
 	
-	public void setDocumento(String documento) {
-		this.documento = documento;
+	@Deprecated
+	public NovoDocumentoRequest() {
+
 	}
 	
-	public String getDocumento() {
-		return documento;
+	public NovoDocumentoRequest(Proposta proposta) {
+		this.documento = proposta.getDocumento();
 	}
+
 }

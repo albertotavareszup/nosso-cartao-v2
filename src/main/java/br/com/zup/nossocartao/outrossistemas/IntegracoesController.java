@@ -11,7 +11,7 @@ public class IntegracoesController {
 	
 	private AtomicInteger contDocumentos = new AtomicInteger();
 
-	@PostMapping(value = "/avaliacao")
+	@PostMapping(value = "/avalia")
 	public String avaliaDocumento(@RequestBody NovoDocumentoRequest request) {		
 		int contAtual = contDocumentos.getAndIncrement();
 		if(contAtual % 2 != 0) {

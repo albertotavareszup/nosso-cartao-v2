@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import org.springframework.util.Assert;
@@ -25,6 +26,8 @@ public class Proposta {
 	@CpfCnpj
 	@NotBlank
 	private String documento;
+	@NotNull
+	private StatusAvaliacaoProposta statusAvaliacao;
 
 	public Proposta(@Email @NotBlank String email, @NotBlank String nome,
 			@NotBlank String endereco, @Positive BigDecimal salario,
@@ -34,6 +37,7 @@ public class Proposta {
 				this.endereco = endereco;
 				this.salario = salario;
 				this.documento = documento;
+				this.statusAvaliacao = StatusAvaliacaoProposta.nao_elegivel;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -66,6 +70,15 @@ public class Proposta {
 		} else if (!documento.equals(other.documento))
 			return false;
 		return true;
+	}
+
+	public String getDocumento() {
+		return this.documento;
+	}
+
+	public void atualizaStatus(StatusAvaliacaoProposta statusAvaliacao) {
+		Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.nao_elegivel), "uma vez que a proposta é elegível não pode mais trocar");
+		this.statusAvaliacao = statusAvaliacao;
 	}
 	
 	
