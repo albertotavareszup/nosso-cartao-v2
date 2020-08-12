@@ -13,28 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.zup.nossocartao.outrossistemas.Integracoes;
-import br.com.zup.nossocartao.outrossistemas.NovoDocumentoRequest;
-
 //8 pontos de complexidade
 @RestController
 public class CriaNovaPropostaController {
 
-	private EntityManager manager;
 	//1
 	private BloqueiaDocumentoIgualValidator bloqueiaDocumentoIgualValidator;
 	//1
-	private Integracoes integracoes;
-	//1
 	private ExecutorTransacao executorTransacao;
+	//1
+	private AvaliaProposta avaliaProposta;
 
-	public CriaNovaPropostaController(EntityManager manager,
+	public CriaNovaPropostaController(
 			BloqueiaDocumentoIgualValidator bloqueiaDocumentoIgualValidator,
-			Integracoes integracoes,ExecutorTransacao executorTransacao) {
+			AvaliaProposta avaliaProposta,ExecutorTransacao executorTransacao) {
 		super();
-		this.manager = manager;
 		this.bloqueiaDocumentoIgualValidator = bloqueiaDocumentoIgualValidator;
-		this.integracoes = integracoes;
+		this.avaliaProposta = avaliaProposta;
 		this.executorTransacao = executorTransacao;
 
 	}
@@ -52,14 +47,9 @@ public class CriaNovaPropostaController {
 		//1
 		Proposta novaProposta = request.toModel();
 		executorTransacao.salvaEComita(novaProposta);
-
 		//1
-		String resultadoAvaliacao = integracoes
-				.avalia(new NovoDocumentoRequest(novaProposta));
-
-		//1 por conta do retorno da enum nova
-		novaProposta.atualizaStatus(RespostaStatusAvaliacao
-				.valueOf(resultadoAvaliacao).getStatusAvaliacao());
+		StatusAvaliacaoProposta avaliacao = avaliaProposta.executa(novaProposta);
+		novaProposta.atualizaStatus(avaliacao);
 
 		URI enderecoConsulta = builder.path("/propostas/{id}")
 				.build(novaProposta.getId());
