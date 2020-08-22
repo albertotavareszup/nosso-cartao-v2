@@ -3,6 +3,7 @@ package br.com.zup.nossocartao.novaproposta;
 import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -34,6 +36,8 @@ public class Proposta {
 	private StatusAvaliacaoProposta statusAvaliacao;
 	@OneToOne(mappedBy = "proposta",cascade = CascadeType.MERGE)	
 	private Cartao cartao;
+	@Version
+	private int versao;
 	
 	@Deprecated
 	public Proposta() {
