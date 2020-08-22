@@ -28,6 +28,11 @@ public class Proposta {
 	private String documento;
 	@NotNull
 	private StatusAvaliacaoProposta statusAvaliacao;
+	
+	@Deprecated
+	public Proposta() {
+
+	}
 
 	public Proposta(@Email @NotBlank String email, @NotBlank String nome,
 			@NotBlank String endereco, @Positive BigDecimal salario,

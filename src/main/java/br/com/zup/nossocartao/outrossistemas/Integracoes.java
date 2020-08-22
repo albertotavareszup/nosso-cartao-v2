@@ -8,4 +8,7 @@ public interface Integracoes {
 
 	@PostMapping("/avalia")
 	public String avalia(NovoDocumentoRequest request);
+
+	@PostMapping("/busca-numero-cartao")
+	public String buscaNumeroCartao(DocumentoProposta documentoProposta);
 }
