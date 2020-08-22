@@ -2,10 +2,14 @@ package br.com.zup.nossocartao.novaproposta;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -28,6 +32,8 @@ public class Proposta {
 	private String documento;
 	@NotNull
 	private StatusAvaliacaoProposta statusAvaliacao;
+	@OneToOne(mappedBy = "proposta",cascade = CascadeType.MERGE)	
+	private Cartao cartao;
 	
 	@Deprecated
 	public Proposta() {
@@ -84,6 +90,12 @@ public class Proposta {
 	public void atualizaStatus(StatusAvaliacaoProposta statusAvaliacao) {
 		Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.nao_elegivel), "uma vez que a proposta é elegível não pode mais trocar");
 		this.statusAvaliacao = statusAvaliacao;
+	}
+
+	public void associaCartao(String numero) {
+		Assert.isNull(cartao,"ja associou o cartao");
+		Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.elegivel),"nao rola associar cartao com proposta nao elegivel");
+		this.cartao = new Cartao(this,numero);
 	}
 	
 	
