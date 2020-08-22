@@ -22,9 +22,9 @@ public class AssociaPropostaCartaoController {
 	@Autowired
 	private Integracoes integracoes;
 	@Autowired
-	private EntityManager manager;
-	@Autowired
 	private ExecutorTransacao executorTransacao;
+	@Autowired
+	private PropostaRepository propostaRepository;
 	
 	private static final Logger log = LoggerFactory
 			.getLogger(AssociaPropostaCartaoController.class);
@@ -32,9 +32,7 @@ public class AssociaPropostaCartaoController {
 
 	@PostMapping(value = "/api-interna/associa-proposta-cartao")
 	public void associa() {
-		List<Proposta> propostas = manager.createQuery("select p from Proposta p left join p.cartao c where p.statusAvaliacao = :status and c.id is null", Proposta.class)
-				.setParameter("status", StatusAvaliacaoProposta.elegivel)
-				.getResultList();
+		List<Proposta> propostas = propostaRepository.todasSemCartao(StatusAvaliacaoProposta.elegivel);
 		
 		log.info("Existem {} propostas para avaliar",propostas.size());
 		
