@@ -16,20 +16,20 @@ import br.com.zup.nossocartao.novaproposta.Cartao;
 
 @RestController
 public class CriaBiometriaController {
-	
+
 	@Autowired
-	private EntityManager manager;
+	private CartaoRepository cartaoRepository;
 
 	@PostMapping(value = "/api/cartoes/{id}/biometria")
 	@Transactional
-	public void cria(@PathVariable("id") Long id,@RequestBody @Valid NovaBiometriaRequest request) {
-		Cartao cartao = manager.find(Cartao.class, id);
-		if(cartao == null) {
-			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
-		}
-		
+	public void cria(@PathVariable("id") Long id,
+			@RequestBody @Valid NovaBiometriaRequest request) {
+		Cartao cartao = cartaoRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(
+						HttpStatus.UNPROCESSABLE_ENTITY));
+
 		cartao.adicionaBiometria(request.getDigital());
-		
+
 	}
 
 }
