@@ -1,13 +1,9 @@
 package br.com.zup.nossocartao.bloqueiocartao;
 
-import java.util.function.Consumer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 @Component
@@ -26,7 +22,7 @@ public class VerificaPrecondicaoBloqueioCartao {
 		}	
 		
 		if(!infoBloqueio.temIpRemoto()) {
-			log.debug("Não rolou bloqueio do cartao {id} por falta do ip remoto");
+			log.debug("Não rolou bloqueio do cartao {} por falta do ip remoto",idCartao);
 			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,"ip");
 		}		
 		

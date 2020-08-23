@@ -18,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.springframework.util.Assert;
 
 import br.com.zup.nossocartao.bloqueiocartao.StatusUso;
 
@@ -61,7 +62,8 @@ public class Cartao {
 	 * @param userAgent navegador que solicitou o bloqueio
 	 * @param ipRemoto ip da solicitacao
 	 */
-	public void bloqueia(String userAgent, String ipRemoto) {		
+	public void bloqueia(String userAgent, String ipRemoto) {
+		Assert.isTrue(!this.biometrias.isEmpty(),"Nenhum cartão pode ser bloqueado se não tiver digital associada");
 		this.statusUsos.add(new StatusUso(PossiveisStatusUso.bloqueado,this,userAgent,ipRemoto));
 	}
 	
