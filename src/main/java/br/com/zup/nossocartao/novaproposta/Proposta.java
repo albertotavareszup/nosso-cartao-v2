@@ -101,6 +101,10 @@ public class Proposta {
 		Assert.isTrue(this.statusAvaliacao.equals(StatusAvaliacaoProposta.elegivel),"nao rola associar cartao com proposta nao elegivel");
 		this.cartao = new Cartao(this,numero);
 	}
+
+	public StatusAvaliacaoProposta getStatusAvaliacao() {
+		return statusAvaliacao;
+	}
 	
 	
 	

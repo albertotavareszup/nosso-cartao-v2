@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.zup.nossocartao.novaproposta.ExecutorTransacao;
 import br.com.zup.nossocartao.novaproposta.Proposta;
@@ -14,7 +16,7 @@ import br.com.zup.nossocartao.novaproposta.StatusAvaliacaoProposta;
 import br.com.zup.nossocartao.outrossistemas.DocumentoProposta;
 import br.com.zup.nossocartao.outrossistemas.Integracoes;
 
-@Controller
+@RestController
 public class AssociaPropostaCartaoScheduler {
 	
 	@Autowired
@@ -29,6 +31,7 @@ public class AssociaPropostaCartaoScheduler {
 
 
 	@Scheduled(fixedDelayString = "${periodicidade.associa-proposta-cartao}")
+	@GetMapping("/executa-associacao-proposta")
 	public void associa() {
 		List<Proposta> propostas = propostaRepository.todasSemCartao(StatusAvaliacaoProposta.elegivel);
 		
