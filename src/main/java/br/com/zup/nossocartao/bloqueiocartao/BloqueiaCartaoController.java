@@ -48,6 +48,10 @@ public class BloqueiaCartaoController {
 			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,"ip");
 		}
 		
+//		verificaPrecondicaoBloqueioCartao.executa(infoNecessariaBloqueioCartao,(info) -> {
+//			//codigo vem aqui
+//		});
+		
 		List<String> userAgents = headers.get(HttpHeaders.USER_AGENT);		
 		
 		Cartao cartao = cartaoRepository.findById(id)
