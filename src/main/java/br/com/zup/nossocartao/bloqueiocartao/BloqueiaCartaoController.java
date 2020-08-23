@@ -26,6 +26,9 @@ public class BloqueiaCartaoController {
 
 	@Autowired
 	private CartaoRepository cartaoRepository;
+
+	@Autowired
+	private VerificaPrecondicaoBloqueioCartao verificaPrecondicaoBloqueioCartao;
 	
 	private static final Logger log = LoggerFactory
 			.getLogger(BloqueiaCartaoController.class);
@@ -35,32 +38,35 @@ public class BloqueiaCartaoController {
 	@Transactional
 	public void bloqueia(@PathVariable("id") Long id,@RequestHeader HttpHeaders headers,HttpServletRequest httpRequest) throws BindException {
 		
-		log.debug("Tentativa bloqueio cartao [{}] vindo do user-agent {}",id,headers.get(HttpHeaders.USER_AGENT));
-		if(!headers.containsKey(HttpHeaders.USER_AGENT)) {			
-			log.debug("Não rolou bloqueio do cartao {id} por falta do user agent");
-			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,"user-agent");
-		}
+		log.debug("Tentativa bloqueio cartao [{}]",id);		
 		
 		String ipRemoto = httpRequest.getRemoteAddr();
-		log.debug("Tentativa bloqueio cartao [{}] vindo do ip {}",id,ipRemoto);
-		if(!StringUtils.hasText(ipRemoto)) {
-			log.debug("Não rolou bloqueio do cartao {id} por falta do ip remoto");
-			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,"ip");
-		}
+		InfoNecessariaBloqueioCartao infoBloqueio = new InfoNecessariaBloqueioCartao() {
+
+			@Override
+			public boolean temNavegador() {
+				return headers.containsKey(HttpHeaders.USER_AGENT);
+			}
+
+			@Override
+			public boolean temIpRemoto() {
+				return StringUtils.hasText(ipRemoto);
+			}
+			
+		};
 		
-//		verificaPrecondicaoBloqueioCartao.executa(infoNecessariaBloqueioCartao,(info) -> {
-//			//codigo vem aqui
-//		});
+		verificaPrecondicaoBloqueioCartao.executa(id,infoBloqueio,() -> {
+			List<String> userAgents = headers.get(HttpHeaders.USER_AGENT);		
+			
+			Cartao cartao = cartaoRepository.findById(id)
+					.orElseThrow(() -> new ResponseStatusException(
+							HttpStatus.UNPROCESSABLE_ENTITY));
+			
+			cartao.bloqueia(userAgents.toString(),ipRemoto);
+			log.debug("Solicitação de bloqueio para cartão {} finalizada",id);
+		});
 		
-		List<String> userAgents = headers.get(HttpHeaders.USER_AGENT);		
 		
-		Cartao cartao = cartaoRepository.findById(id)
-				.orElseThrow(() -> new ResponseStatusException(
-						HttpStatus.UNPROCESSABLE_ENTITY));
-		
-		cartao.bloqueia(userAgents.toString(),ipRemoto);
-		
-		log.debug("Solicitação de bloqueio para cartão {} finalizada",id);
 		
 	}
 
