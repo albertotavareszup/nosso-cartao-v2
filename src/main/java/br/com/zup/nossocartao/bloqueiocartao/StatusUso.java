@@ -35,5 +35,9 @@ public class StatusUso {
 		this.userAgent = userAgent;
 		this.ipRemoto = ipRemoto;
 	}
+	
+	public boolean verificaStatus(PossiveisStatusUso possivelStatusUso) {
+		return this.statusSolicitado.equals(possivelStatusUso);
+	}
 
 }

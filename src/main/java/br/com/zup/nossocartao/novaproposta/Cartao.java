@@ -25,7 +25,6 @@ import br.com.zup.nossocartao.bloqueiocartao.StatusUso;
 @Entity
 public class Cartao {
 
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -38,13 +37,14 @@ public class Cartao {
 	private Set<Biometria> biometrias = new HashSet<>();
 	@OneToMany(mappedBy = "cartao")
 	private List<StatusUso> statusUsos = new ArrayList<>();
-	
+
 	@Deprecated
 	public Cartao() {
 
 	}
-	
-	public Cartao(@NotNull @Valid Proposta proposta, @CreditCardNumber @NotBlank String numero) {
+
+	public Cartao(@NotNull @Valid Proposta proposta,
+			@CreditCardNumber @NotBlank String numero) {
 		this.proposta = proposta;
 		this.numero = numero;
 	}
@@ -60,16 +60,32 @@ public class Cartao {
 	/**
 	 * 
 	 * @param userAgent navegador que solicitou o bloqueio
-	 * @param ipRemoto ip da solicitacao
+	 * @param ipRemoto  ip da solicitacao
 	 */
-	public void bloqueia(@NotBlank String userAgent, @NotBlank String ipRemoto) {
-		Assert.state(!this.biometrias.isEmpty(),"Nenhum cartão pode ser bloqueado se não tiver digital associada");
-		this.statusUsos.add(new StatusUso(PossiveisStatusUso.bloqueado,this,userAgent,ipRemoto));
+	public void bloqueia(@NotBlank String userAgent,
+			@NotBlank String ipRemoto) {
+		Assert.state(!this.biometrias.isEmpty(),
+				"Nenhum cartão pode ser bloqueado se não tiver digital associada");
+		this.statusUsos.add(new StatusUso(PossiveisStatusUso.bloqueado, this,
+				userAgent, ipRemoto));
 	}
 
 	public String getNumero() {
-		//aqui deveria ta encodado de alguma forma?
+		// aqui deveria ta encodado de alguma forma?
 		return numero;
 	}
-	
+
+	public boolean precondicoesAvisoViagem() {
+		return !this.biometrias.isEmpty() && liberado();
+	}
+
+	private boolean liberado() {
+		if (this.statusUsos.isEmpty()) {
+			return true;
+		}
+		//ultimo status liberado
+		return this.statusUsos.get(this.statusUsos.size() - 1)
+				.verificaStatus(PossiveisStatusUso.liberado);
+	}
+
 }
