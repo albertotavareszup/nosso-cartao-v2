@@ -1,4 +1,4 @@
-package br.com.zup.nossocartao.novaproposta;
+package br.com.zup.nossocartao.criabiometria;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

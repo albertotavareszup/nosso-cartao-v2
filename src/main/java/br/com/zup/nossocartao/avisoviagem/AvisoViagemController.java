@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.zup.nossocartao.associacartao.Cartao;
 import br.com.zup.nossocartao.criabiometria.CartaoRepository;
-import br.com.zup.nossocartao.novaproposta.Cartao;
 
 @RestController
 public class AvisoViagemController {

@@ -15,7 +15,7 @@ import javax.validation.constraints.PastOrPresent;
 
 import org.springframework.util.Assert;
 
-import br.com.zup.nossocartao.novaproposta.Cartao;
+import br.com.zup.nossocartao.associacartao.Cartao;
 
 @Entity
 public class AvisoViagem {

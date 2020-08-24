@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.zup.nossocartao.novaproposta.Cartao;
+import br.com.zup.nossocartao.associacartao.Cartao;
 
 @RestController
 public class CriaBiometriaController {

@@ -1,4 +1,4 @@
-package br.com.zup.nossocartao.novaproposta;
+package br.com.zup.nossocartao.associacartao;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -20,7 +20,10 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.springframework.util.Assert;
 
+import br.com.zup.nossocartao.bloqueiocartao.PossiveisStatusUso;
 import br.com.zup.nossocartao.bloqueiocartao.StatusUso;
+import br.com.zup.nossocartao.criabiometria.Biometria;
+import br.com.zup.nossocartao.novaproposta.Proposta;
 
 @Entity
 public class Cartao {

@@ -19,6 +19,8 @@ import javax.validation.constraints.Positive;
 
 import org.springframework.util.Assert;
 
+import br.com.zup.nossocartao.associacartao.Cartao;
+
 @Entity
 public class Proposta {
 

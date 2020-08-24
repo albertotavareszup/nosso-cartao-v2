@@ -11,8 +11,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import br.com.zup.nossocartao.novaproposta.Cartao;
-import br.com.zup.nossocartao.novaproposta.PossiveisStatusUso;
+import br.com.zup.nossocartao.associacartao.Cartao;
 
 @Entity
 public class StatusUso {

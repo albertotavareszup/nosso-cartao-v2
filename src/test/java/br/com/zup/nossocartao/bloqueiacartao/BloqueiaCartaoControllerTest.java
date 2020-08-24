@@ -10,9 +10,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.com.zup.nossocartao.associacartao.Cartao;
 import br.com.zup.nossocartao.bloqueiocartao.BloqueiaCartaoController;
 import br.com.zup.nossocartao.criabiometria.CartaoRepository;
-import br.com.zup.nossocartao.novaproposta.Cartao;
 import br.com.zup.nossocartao.outrossistemas.Integracoes;
 
 public class BloqueiaCartaoControllerTest {

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.com.zup.nossocartao.associacartao.Cartao;
 import br.com.zup.nossocartao.criabiometria.CartaoRepository;
-import br.com.zup.nossocartao.novaproposta.Cartao;
 import br.com.zup.nossocartao.outrossistemas.Integracoes;
 import feign.FeignException;
 
