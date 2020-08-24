@@ -62,8 +62,8 @@ public class Cartao {
 	 * @param userAgent navegador que solicitou o bloqueio
 	 * @param ipRemoto ip da solicitacao
 	 */
-	public void bloqueia(String userAgent, String ipRemoto) {
-		Assert.isTrue(!this.biometrias.isEmpty(),"Nenhum cartão pode ser bloqueado se não tiver digital associada");
+	public void bloqueia(@NotBlank String userAgent, @NotBlank String ipRemoto) {
+		Assert.state(!this.biometrias.isEmpty(),"Nenhum cartão pode ser bloqueado se não tiver digital associada");
 		this.statusUsos.add(new StatusUso(PossiveisStatusUso.bloqueado,this,userAgent,ipRemoto));
 	}
 	
