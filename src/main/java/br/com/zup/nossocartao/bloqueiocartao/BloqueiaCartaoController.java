@@ -30,48 +30,58 @@ public class BloqueiaCartaoController {
 	private CartaoRepository cartaoRepository;
 
 	private Integracoes integracoes;
-	
+
 	private static final Logger log = LoggerFactory
 			.getLogger(BloqueiaCartaoController.class);
-	
-	public BloqueiaCartaoController(CartaoRepository cartaoRepository,Integracoes integracoes) {
+
+	public BloqueiaCartaoController(CartaoRepository cartaoRepository,
+			Integracoes integracoes) {
 		this.cartaoRepository = cartaoRepository;
 		this.integracoes = integracoes;
 	}
 
-
 	@PostMapping(value = "/api/cartoes/{id}/bloqueia")
 	@Transactional
-	public void bloqueia(@PathVariable("id") Long id,@RequestHeader HttpHeaders headers,HttpServletRequest httpRequest) throws BindException {
-		
-		log.debug("Tentativa bloqueio cartao [{}] vindo do user-agent {}",id,headers.get(HttpHeaders.USER_AGENT));
-		if(!headers.containsKey(HttpHeaders.USER_AGENT) || headers.get(HttpHeaders.USER_AGENT).isEmpty()) {			
-			log.debug("Não rolou bloqueio do cartao {id} por falta do user agent");
-			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,"user-agent");
+	public void bloqueia(@PathVariable("id") Long id,
+			@RequestHeader HttpHeaders headers, HttpServletRequest httpRequest)
+			throws BindException {
+
+		log.debug("Tentativa bloqueio cartao [{}] vindo do user-agent {}", id,
+				headers.get(HttpHeaders.USER_AGENT));
+		if (!headers.containsKey(HttpHeaders.USER_AGENT)
+				|| headers.get(HttpHeaders.USER_AGENT).isEmpty()) {
+			log.debug(
+					"Não rolou bloqueio do cartao {id} por falta do user agent");
+			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,
+					"user-agent");
 		}
-		
+
 		String ipRemoto = httpRequest.getRemoteAddr();
-		log.debug("Tentativa bloqueio cartao [{}] vindo do ip {}",id,ipRemoto);
-		if(!StringUtils.hasText(ipRemoto)) {
-			log.debug("Não rolou bloqueio do cartao {} por falta do ip remoto",id);
-			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,"ip");
+		log.debug("Tentativa bloqueio cartao [{}] vindo do ip {}", id,
+				ipRemoto);
+		if (!StringUtils.hasText(ipRemoto)) {
+			log.debug("Não rolou bloqueio do cartao {} por falta do ip remoto",
+					id);
+			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,
+					"ip");
 		}
-		
-		
-		String userAgent = headers.get(HttpHeaders.USER_AGENT).get(0);				
+
+		String userAgent = headers.get(HttpHeaders.USER_AGENT).get(0);
 		Cartao cartao = cartaoRepository.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(
 						HttpStatus.UNPROCESSABLE_ENTITY));
-		
-		try {
-			integracoes.bloqueiaCartaoCanais(Map.of("numero",cartao.getNumero()));
-			cartao.bloqueia(userAgent,ipRemoto);
-		} catch (FeignException e) {
-			throw new ResponseStatusException(HttpStatus.valueOf(e.status()));
-		}
-		
-		log.debug("Solicitação de bloqueio para cartão {} finalizada",id);
-		
+
+		integracoes.bloqueiaCartaoCanais(Map.of("numero", cartao.getNumero()));
+		/*
+		 * Existe alguma forma de deixar travado no código que o bloqueio só
+		 * é feito se a integracao foi chamada?
+		 * 
+		 * Existe. Estamos dispostos a fazer?
+		 */
+		cartao.bloqueia(userAgent, ipRemoto);
+
+		log.debug("Solicitação de bloqueio para cartão {} finalizada", id);
+
 	}
 
 }

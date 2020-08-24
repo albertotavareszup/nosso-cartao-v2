@@ -21,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
+import feign.FeignException;
+
 @RestControllerAdvice
 public class ValidationErrorHandler {
 
@@ -78,7 +80,7 @@ public class ValidationErrorHandler {
 		List<ObjectError> globalErrors = List.of(new ObjectError("",
 				exception.getReason() != null ? exception.getReason()
 						: "Os dados enviados não puderam ser processados"));
-		
+
 		List<FieldError> fieldErrors = List.of();
 
 		ValidationErrorsOutputDto output = buildValidationErrors(globalErrors,
@@ -104,6 +106,13 @@ public class ValidationErrorHandler {
 
 	private String getErrorMessage(ObjectError error) {
 		return messageSource.getMessage(error, LocaleContextHolder.getLocale());
+	}
+
+	@ExceptionHandler(FeignException.class)
+	public ResponseEntity<ValidationErrorsOutputDto> handleFeignException(
+			FeignException exception) {
+		return handleCustomStatusException(new ResponseStatusException(
+				HttpStatus.valueOf(exception.status())));
 	}
 
 }

@@ -34,7 +34,10 @@ public class IntegracoesController {
 	@PostMapping(value = "/bloqueia-cartao-canais")
 	public void bloqueia(@RequestBody Map<String, String> params) {
 		log.debug("bloqueando cartao ###{}",params.get("numero").substring(7));
-		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		int contAtual = contDocumentos.getAndIncrement();
+		if(contAtual % 2 != 0) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		}		
 	}
 	
 	@PostMapping("/busca-numero-cartao")

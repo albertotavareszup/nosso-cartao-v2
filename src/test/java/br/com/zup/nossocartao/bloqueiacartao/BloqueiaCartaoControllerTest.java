@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import br.com.zup.nossocartao.bloqueiocartao.BloqueiaCartaoController;
 import br.com.zup.nossocartao.criabiometria.CartaoRepository;
 import br.com.zup.nossocartao.novaproposta.Cartao;
+import br.com.zup.nossocartao.outrossistemas.Integracoes;
 
 public class BloqueiaCartaoControllerTest {
 
@@ -20,8 +21,9 @@ public class BloqueiaCartaoControllerTest {
 	private MockHttpServletRequest httpRequest = new MockHttpServletRequest();
 	private CartaoRepository cartaoRepository = Mockito
 			.mock(CartaoRepository.class);
+	private Integracoes integracoes = Mockito.mock(Integracoes.class);
 	private BloqueiaCartaoController controller = new BloqueiaCartaoController(
-			cartaoRepository);
+			cartaoRepository,integracoes);
 
 	@Test
 	@DisplayName("deveria bloquear se nao tiver user agent")
@@ -65,6 +67,7 @@ public class BloqueiaCartaoControllerTest {
 		headers.set(HttpHeaders.USER_AGENT, "chrome");
 
 		Cartao cartao = Mockito.mock(Cartao.class);
+		Mockito.when(cartao.getNumero()).thenReturn("11111111111");
 		Mockito.when(cartaoRepository.findById(1l))
 				.thenReturn(Optional.of(cartao));
 
