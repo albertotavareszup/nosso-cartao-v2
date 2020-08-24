@@ -66,5 +66,10 @@ public class Cartao {
 		Assert.state(!this.biometrias.isEmpty(),"Nenhum cartão pode ser bloqueado se não tiver digital associada");
 		this.statusUsos.add(new StatusUso(PossiveisStatusUso.bloqueado,this,userAgent,ipRemoto));
 	}
+
+	public String getNumero() {
+		//aqui deveria ta encodado de alguma forma?
+		return numero;
+	}
 	
 }

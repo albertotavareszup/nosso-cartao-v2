@@ -1,16 +1,25 @@
 package br.com.zup.nossocartao.outrossistemas;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 public class IntegracoesController {
 	
 	private AtomicInteger contDocumentos = new AtomicInteger();
+	
+	private static final Logger log = LoggerFactory
+			.getLogger(IntegracoesController.class);
+
 
 	@PostMapping(value = "/avalia")
 	public String avaliaDocumento(@RequestBody NovoDocumentoRequest request) {		
@@ -20,6 +29,12 @@ public class IntegracoesController {
 		}
 		
 		return "SEM_RESTRICAO";
+	}
+	
+	@PostMapping(value = "/bloqueia-cartao-canais")
+	public void bloqueia(@RequestBody Map<String, String> params) {
+		log.debug("bloqueando cartao ###{}",params.get("numero").substring(7));
+		throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 	}
 	
 	@PostMapping("/busca-numero-cartao")

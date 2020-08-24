@@ -1,6 +1,7 @@
 package br.com.zup.nossocartao.bloqueiocartao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -20,17 +21,22 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.zup.nossocartao.criabiometria.CartaoRepository;
 import br.com.zup.nossocartao.novaproposta.Cartao;
+import br.com.zup.nossocartao.outrossistemas.Integracoes;
+import feign.FeignException;
 
 @RestController
 public class BloqueiaCartaoController {
 
 	private CartaoRepository cartaoRepository;
+
+	private Integracoes integracoes;
 	
 	private static final Logger log = LoggerFactory
 			.getLogger(BloqueiaCartaoController.class);
 	
-	public BloqueiaCartaoController(CartaoRepository cartaoRepository) {
+	public BloqueiaCartaoController(CartaoRepository cartaoRepository,Integracoes integracoes) {
 		this.cartaoRepository = cartaoRepository;
+		this.integracoes = integracoes;
 	}
 
 
@@ -51,13 +57,18 @@ public class BloqueiaCartaoController {
 			throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED,"ip");
 		}
 		
-		String userAgent = headers.get(HttpHeaders.USER_AGENT).get(0);		
 		
+		String userAgent = headers.get(HttpHeaders.USER_AGENT).get(0);				
 		Cartao cartao = cartaoRepository.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(
 						HttpStatus.UNPROCESSABLE_ENTITY));
 		
-		cartao.bloqueia(userAgent,ipRemoto);
+		try {
+			integracoes.bloqueiaCartaoCanais(Map.of("numero",cartao.getNumero()));
+			cartao.bloqueia(userAgent,ipRemoto);
+		} catch (FeignException e) {
+			throw new ResponseStatusException(HttpStatus.valueOf(e.status()));
+		}
 		
 		log.debug("Solicitação de bloqueio para cartão {} finalizada",id);
 		
