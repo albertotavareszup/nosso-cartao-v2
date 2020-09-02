@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,12 +16,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.springframework.util.Assert;
 
+import br.com.zup.nossocartao.associapaypal.CarteiraPaypal;
 import br.com.zup.nossocartao.bloqueiocartao.PossiveisStatusUso;
 import br.com.zup.nossocartao.bloqueiocartao.StatusUso;
 import br.com.zup.nossocartao.criabiometria.Biometria;
@@ -40,6 +44,8 @@ public class Cartao {
 	private Set<Biometria> biometrias = new HashSet<>();
 	@OneToMany(mappedBy = "cartao")
 	private List<StatusUso> statusUsos = new ArrayList<>();
+	@OneToOne(mappedBy = "cartao",cascade = CascadeType.PERSIST)
+	private CarteiraPaypal carteiraPaypal;
 
 	@Deprecated
 	public Cartao() {
@@ -89,6 +95,20 @@ public class Cartao {
 		//ultimo status liberado
 		return this.statusUsos.get(this.statusUsos.size() - 1)
 				.verificaStatus(PossiveisStatusUso.liberado);
+	}
+
+	public Optional<CarteiraPaypal> adicionaPaypal(
+			@NotBlank @Email String email) {
+		if(this.carteiraPaypal != null) {
+			return Optional.empty();
+		}
+		
+		this.carteiraPaypal = new CarteiraPaypal(this, email);		 
+		return Optional.of(this.carteiraPaypal);
+	}
+
+	public boolean precondicaoAceitePaypal() {
+		return this.carteiraPaypal == null;
 	}
 
 }

@@ -21,4 +21,11 @@ public interface Integracoes {
 	 * @param params {"numero":...}
 	 */
 	public ResponseEntity<?> bloqueiaCartaoCanais(Map<String, String> params);
+	
+	@PostMapping("/associa-paypal")
+	/**
+	 * 
+	 * @param params {"numero":...,'email':email}
+	 */
+	public ResponseEntity<?> associaPaypal(Map<String, String> params);
 }

@@ -1,8 +1,12 @@
 package br.com.zup.nossocartao.compartilhado;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +60,27 @@ public class ValidationErrorHandler {
 				.getGlobalErrors();
 		List<FieldError> fieldErrors = exception.getBindingResult()
 				.getFieldErrors();
+
+		return buildValidationErrors(globalErrors, fieldErrors);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ValidationErrorsOutputDto handleBeanValidationConstraintViolation(
+			ConstraintViolationException exception) {
+
+		List<ObjectError> globalErrors = new ArrayList<>();
+		List<FieldError> fieldErrors = new ArrayList<>();
+
+		Set<ConstraintViolation<?>> violations = exception
+				.getConstraintViolations();
+		//este código aqui precisa de reparo. 
+		//para ser sincero talvez não valha a pena usar o Validated no controller
+		for (ConstraintViolation<?> constraintViolation : violations) {
+			fieldErrors
+					.add(new FieldError("",
+							constraintViolation.getPropertyPath().toString(),
+							constraintViolation.getMessage()));
+		}
 
 		return buildValidationErrors(globalErrors, fieldErrors);
 	}
@@ -116,12 +141,12 @@ public class ValidationErrorHandler {
 		return handleCustomStatusException(new ResponseStatusException(
 				HttpStatus.valueOf(exception.status())));
 	}
-	
+
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<ValidationErrorsOutputDto> handleEntityNotFoundException(
 			EntityNotFoundException exception) {
-		return handleCustomStatusException(new ResponseStatusException(
-				HttpStatus.NOT_FOUND));
+		return handleCustomStatusException(
+				new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 
 }
