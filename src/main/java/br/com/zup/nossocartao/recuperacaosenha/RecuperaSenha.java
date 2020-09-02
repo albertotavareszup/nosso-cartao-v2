@@ -1,4 +1,4 @@
-package br.com.zup.nossocartao.avisoviagem;
+package br.com.zup.nossocartao.recuperacaosenha;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -18,32 +18,28 @@ import org.springframework.util.Assert;
 import br.com.zup.nossocartao.associacartao.Cartao;
 
 @Entity
-public class AvisoViagem {
-	
+public class RecuperaSenha {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne
-	private @Valid @NotNull Cartao cartao;
-	private @NotBlank String destino;
-	private @NotBlank String navegador;
+	private @NotNull @Valid Cartao cartao;
 	private @NotBlank String remoteAddr;
-	@NotNull
+	private @NotBlank String navegador;
 	@PastOrPresent
 	private LocalDateTime instante = LocalDateTime.now();
 
-	public AvisoViagem(@Valid @NotNull Cartao cartao, @NotBlank String destino, @NotBlank String navegador,
-			@NotBlank String remoteAddr) {
-				Assert.isTrue(cartao.precondicoesUso(),"As precondioes para viagem não estão satisfeitas");
+	public RecuperaSenha(@NotNull @Valid Cartao cartao, @NotBlank String remoteAddr,
+			@NotBlank String navegador) {
+		Assert.isTrue(cartao.precondicoesUso(),"Este cartão não deveria estar sendo usado");
 				this.cartao = cartao;
-				this.destino = destino;
-				this.navegador = navegador;
 				this.remoteAddr = remoteAddr;
+				this.navegador = navegador;
 	}
 
 	public Optional<Long> getId() {
-		return Optional.ofNullable(id);
+		return Optional.of(id);
 	}
 
-	
 }

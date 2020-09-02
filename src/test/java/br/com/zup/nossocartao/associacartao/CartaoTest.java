@@ -20,7 +20,7 @@ public class CartaoTest {
 				"endereco", BigDecimal.TEN, "12324353454");
 		
 		Cartao cartao = new Cartao(proposta, "111111111");
-		Assertions.assertFalse(cartao.precondicoesAvisoViagem());
+		Assertions.assertFalse(cartao.precondicoesUso());
 	}
 	
 	@Test
@@ -32,7 +32,7 @@ public class CartaoTest {
 		Cartao cartao = new Cartao(proposta, "111111111");
 		cartao.adicionaBiometria("8645878534");
 		
-		Assertions.assertTrue(cartao.precondicoesAvisoViagem());
+		Assertions.assertTrue(cartao.precondicoesUso());
 	}
 	
 	@Test
@@ -45,6 +45,6 @@ public class CartaoTest {
 		cartao.adicionaBiometria("8645878534");
 		cartao.bloqueia("navegador", "127.0.0.1");
 		
-		Assertions.assertFalse(cartao.precondicoesAvisoViagem());
+		Assertions.assertFalse(cartao.precondicoesUso());
 	}
 }

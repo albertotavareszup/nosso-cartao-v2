@@ -78,7 +78,7 @@ public class Cartao {
 		return numero;
 	}
 
-	public boolean precondicoesAvisoViagem() {
+	public boolean precondicoesUso() {
 		return !this.biometrias.isEmpty() && liberado();
 	}
 
