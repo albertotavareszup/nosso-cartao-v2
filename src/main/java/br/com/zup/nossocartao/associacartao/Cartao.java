@@ -46,6 +46,8 @@ public class Cartao {
 	private List<StatusUso> statusUsos = new ArrayList<>();
 	@OneToOne(mappedBy = "cartao",cascade = CascadeType.PERSIST)
 	private CarteiraPaypal carteiraPaypal;
+	@OneToOne(mappedBy = "cartao",cascade = CascadeType.PERSIST)
+	private CarteiraSamsung carteiraSamsung;
 
 	@Deprecated
 	public Cartao() {
@@ -109,6 +111,20 @@ public class Cartao {
 
 	public boolean precondicaoAceitePaypal() {
 		return this.carteiraPaypal == null;
+	}
+
+	public Optional<CarteiraSamsung> adicionaSamsung(
+			@NotBlank @Email String email) {
+		if(!this.precondicaoSamsung()) {
+			return Optional.empty();
+		}
+		
+		this.carteiraSamsung = new CarteiraSamsung(this, email);		 
+		return Optional.of(this.carteiraSamsung);
+	}
+
+	public boolean precondicaoSamsung() {
+		return this.carteiraSamsung == null;
 	}
 
 }

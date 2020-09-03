@@ -1,4 +1,4 @@
-package br.com.zup.nossocartao.associapaypal;
+package br.com.zup.nossocartao.associacartao;
 
 import java.util.Optional;
 
@@ -8,36 +8,31 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.util.Assert;
-import org.springframework.validation.annotation.Validated;
 
-import br.com.zup.nossocartao.associacartao.Cartao;
+import br.com.zup.nossocartao.associapaypal.CarteiraPaypal;
 
 @Entity
-public class CarteiraPaypal {
+public class CarteiraSamsung {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@OneToOne
-	private @NotNull Cartao cartao;
+	private @NotNull @Valid Cartao cartao;
 	private @NotBlank @Email String email;
-	
-	@Deprecated
-	public CarteiraPaypal() {
 
-	}
-
-	public CarteiraPaypal(@NotNull @Validated Cartao cartao,
+	public CarteiraSamsung(@NotNull @Valid Cartao cartao,
 			@NotBlank @Email String email) {
-		Assert.isTrue(cartao.precondicoesUso(),"As precondicoes do cartao precisa ser válidas");
-		Assert.isTrue(cartao.precondicaoAceitePaypal(), "Este cartão já está associado com o paypal");
-				this.cartao = cartao;
-				this.email = email;
+		Assert.isTrue(cartao.precondicaoSamsung(),
+				"A precondicao para samsung não foi respeitada");
+		this.cartao = cartao;
+		this.email = email;
 	}
 
 	public Optional<Long> getId() {
