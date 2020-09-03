@@ -26,15 +26,23 @@ import br.com.zup.nossocartao.outrossistemas.Integracoes;
 @Validated
 public class AssociaPaypalController {
 
-	@Autowired
 	private CartaoRepository cartaoRepository;
-	@Autowired
 	private ExecutorTransacao executorTransacao;
-	@Autowired
 	private Integracoes integracoes;
 	
 	private static final Logger log = LoggerFactory
 			.getLogger(AssociaPaypalController.class);
+	
+
+	public AssociaPaypalController(CartaoRepository cartaoRepository,
+			ExecutorTransacao executorTransacao, Integracoes integracoes) {
+		super();
+		this.cartaoRepository = cartaoRepository;
+		this.executorTransacao = executorTransacao;
+		this.integracoes = integracoes;
+	}
+
+
 
 
 	@PostMapping(value = "/api/cartoes/{id}/associa-paypal")

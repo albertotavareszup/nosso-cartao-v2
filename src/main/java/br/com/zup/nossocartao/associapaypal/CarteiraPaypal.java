@@ -40,7 +40,7 @@ public class CarteiraPaypal {
 	}
 
 	public Optional<Long> getId() {
-		return Optional.of(id);
+		return Optional.ofNullable(id);
 	}
 
 }
