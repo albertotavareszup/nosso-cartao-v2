@@ -47,4 +47,15 @@ public class CartaoTest {
 		
 		Assertions.assertFalse(cartao.precondicoesUso());
 	}
+	
+	@Test
+	@DisplayName("se nao tem paypal, então libera associacao")
+	void teste4() throws Exception {
+		Proposta proposta = new Proposta("email@email.com", "Alberto",
+				"endereco", BigDecimal.TEN, "12324353454");
+		
+		Cartao cartao = new Cartao(proposta, "111111111");
+		
+		Assertions.assertTrue(cartao.precondicaoAceitePaypal());
+	}
 }
